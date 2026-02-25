@@ -13,19 +13,35 @@ let evens = [];
  */
 
 function addToBank(n) {
-    start += n;
+    bank.push(n);
 }
 
-function sort1(n) {
-    if (start > 0) {
-        start -= 1;
+function sort1() {
+    if (bank.length > 0) {
+        n = bank.shift();
+        console.log(n);
         if (n % 2 === 0) {
-            sortEvens += 1;
+            evens.push(n);
         }
         if (n % 2 !== 0) {
-            sortOdds += 1;
+            odds.push(n);
         }
     }
+}
+
+function sortAll() {
+    for (i = 0; i < bank.length; ++i) {
+        n = bank[i];
+        console.log(n);
+        if (n % 2 === 0) {
+            evens.push(n);
+        }
+        if (n % 2 !== 0) {
+            odds.push(n);
+        }
+        
+    }
+    bank = [];
 }
 
 // === Components ===
@@ -39,42 +55,64 @@ function addForm() {
             Add a number to the bank
             <input name="add" type="number" />
         </label>
-        <button>Add number</button>
-        <button>Sort 1</button>
-        <button>Sort All</button>
+        <button id="bankAdd">Add number</button>
+        <button id="sort1">Sort 1</button>
+        <button id="sortAll">Sort All</button>
         `;
 
 /* Event Listener for submit */
-$form.addEventListener("submit", function (event) {
-event.preventDefault();
+    $form.addEventListener("submit", function (event) {
+        
+        event.preventDefault();
 
-    const formData = new FormData($form);
-    const add = Number(formData.get("add"));
+       const formData = new FormData($form);
+       const add = Number(formData.get("add"));
 
-    if (add > 0) {
-        addToBank(add);
-        render();
-    }
+        if (event.submitter.id == "bankAdd") {
+            if (add !== 0) {
+                addToBank(add);
+               
+            }
+            console.log(event.submitter.id)
+        } else if (event.submitter.id == "sort1") {
+            sort1();
+        } else if (event.submitter.id == "sortAll") {
+            sortAll();
+        }
+        render();    
     })
     return $form;
 }
 
-
-
 function bankForm() {
-    const $bank = document.createElement("form");
+    const $bank = document.createElement("div");
     $bank.classList.add('bankform');
 
     $bank.innerHTML = `
-    <label>
-    <input name="bank" type="number" />
-    </label>
+        <div>${bank.join(" ")}</div>
 `;
 return $bank;
 }
 
+function oddForm() {
+    const $odd = document.createElement("div");
+    $odd.classList.add("oddform");
 
-        
+    $odd.innerHTML = `
+        <div>${odds.join(" ")}</div>
+`;
+return $odd
+}
+
+function evenForm() {
+    const $even = document.createElement("div");
+    $even.classList.add("evenform");
+
+    $even.innerHTML = `
+        <div>${evens.join(" ")}</div>
+`;
+return $even
+}
     
 
 // === Render ===
@@ -87,15 +125,15 @@ function render() {
         <h3>Bank</h3>
         <bankForm></bankForm>
         <h3>Odds</h3>
-        <sortOdds></sortOdds>
+        <oddForm></oddForm>
         <h3>Evens</h3>
-        <sortEvens></sortEvens>
+        <evenForm></evenForm>
     </main>
 `;
 $app.querySelector("addForm").replaceWith(addForm());
 $app.querySelector("bankForm").replaceWith(bankForm());
-//$app.querySelector("sortOdds").replaceWith(sortOdds());
-//$app.querySelector("sortEvens").replaceWith(sortEvens());
-console.log(start);
+$app.querySelector("oddForm").replaceWith(oddForm());
+$app.querySelector("evenForm").replaceWith(evenForm());
+console.log(bank);
 }
 render();
